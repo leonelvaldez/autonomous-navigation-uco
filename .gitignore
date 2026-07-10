@@ -49,3 +49,10 @@ qtcreator-*
 
 # Catkin custom files
 CATKIN_IGNORE
+
+# Project-specific
+__pycache__/
+*.bag
+.catkin_tools/
+.vscode/
+*.swp
