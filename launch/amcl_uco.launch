@@ -1,0 +1,16 @@
+<launch>
+  <!--
+    map_server + amcl, no camera needed. Replaces amcl_demo.launch which
+    wants the orbbec camera we don't have.
+    Needs bringup + rplidar_uco.launch already running on the Pi.
+    Run this one on the VM.
+  -->
+
+  <arg name="map_file" default="$(find autonomous_navigation_uco)/maps/map.yaml" />
+
+  <node pkg="map_server" type="map_server" name="map_server" args="$(arg map_file)" />
+
+  <node pkg="amcl" type="amcl" name="amcl" output="screen">
+    <rosparam file="$(find autonomous_navigation_uco)/config/amcl_params.yaml" command="load" />
+  </node>
+</launch>
