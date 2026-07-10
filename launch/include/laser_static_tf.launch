@@ -1,0 +1,10 @@
+<launch>
+  <!--
+    base_link -> laser_frame transform (not in the URDF, so we publish
+    it ourselves). Lidar is mounted backwards on the robot, 180 off from
+    base_link's forward direction -- yaw has to be pi or every map/scan
+    comes out mirrored/rotated wrong.
+  -->
+  <node pkg="tf" type="static_transform_publisher" name="base_to_laser_tf"
+        args="0 0 0 3.14159 0 0 base_link laser_frame 100" />
+</launch>

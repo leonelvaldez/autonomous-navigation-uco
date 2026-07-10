@@ -1,0 +1,14 @@
+<launch>
+  <!-- Just the lidar driver, no gmapping. Map's already done, run on the Pi. -->
+
+  <arg name="serial_port" default="/dev/ttyUSB0" />
+  <arg name="serial_baudrate" default="115200" />
+
+  <include file="$(find autonomous_navigation_uco)/launch/include/laser_static_tf.launch" />
+
+  <node pkg="rplidar_ros" type="rplidarNode" name="rplidarNode" output="screen">
+    <param name="serial_port" value="$(arg serial_port)" />
+    <param name="serial_baudrate" value="$(arg serial_baudrate)" />
+    <param name="frame_id" value="laser_frame" />
+  </node>
+</launch>
