@@ -18,8 +18,8 @@ obstacle_layer:
     clearing: true
 
 inflation_layer:
-  inflation_radius: 0.5
-  cost_scaling_factor: 3.0
+  inflation_radius: 0.4
+  cost_scaling_factor: 5.0
 
 static_layer:
   map_topic: /map
