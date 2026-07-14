@@ -6,6 +6,7 @@
   -->
 
   <node pkg="move_base" type="move_base" name="move_base" output="screen">
+    <remap from="cmd_vel" to="/cmd_vel_mux/input/navi" />
     <rosparam file="$(find autonomous_navigation_uco)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
     <rosparam file="$(find autonomous_navigation_uco)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find autonomous_navigation_uco)/config/local_costmap_params.yaml" command="load" />
@@ -14,7 +15,7 @@
 
     <param name="base_global_planner" value="navfn/NavfnROS" />
     <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
-    <param name="controller_frequency" value="5.0" />
+    <param name="controller_frequency" value="4.0" />
     <param name="planner_frequency" value="1.0" />
     <param name="recovery_behavior_enabled" value="true" />
     <param name="clearing_rotation_allowed" value="true" />
