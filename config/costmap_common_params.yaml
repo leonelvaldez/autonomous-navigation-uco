@@ -4,7 +4,7 @@
 # plugins list in global/local_costmap_params.yaml, otherwise the layer
 # just ignores them.
 
-footprint: [[-0.18, -0.18], [-0.18, 0.18], [0.18, 0.18], [0.18, -0.18]]
+footprint: [[-0.22, -0.22], [-0.22, 0.22], [0.22, 0.22], [0.22, -0.22]]
 
 obstacle_layer:
   observation_sources: laser_scan_sensor
@@ -18,7 +18,8 @@ obstacle_layer:
     clearing: true
 
 inflation_layer:
-  inflation_radius: 0.4
+  inflation_radius: 0.5
+  cost_scaling_factor: 3.0
 
 static_layer:
   map_topic: /map
