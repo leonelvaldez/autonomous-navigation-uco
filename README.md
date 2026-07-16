@@ -56,10 +56,24 @@ part of this setup. This repo's launch files replace them.
 RViz doesn't show `Map`/`LaserScan` by default, add them manually
 (Add → By topic).
 
+Tested on the real robot, reaches goals and avoids obstacles.
+
+## Task 4 — points of interest
+
+`poi/points_of_interest.yaml` has named (x, y, yaw) spots on the map,
+all in the same room for now since that's all the map currently covers.
+
+Send the robot to one with:
+```bash
+rosrun autonomous_navigation_uco send_nav_goal.py <poi_id>
+rosrun autonomous_navigation_uco send_nav_goal.py --list   # to see the ids
+```
+
 ## Status
 
 | Task | Status |
 |---|---|
 | 1 — ROS/TurtleBot setup | done |
 | 2 — map building | done, map committed above |
-| 3 — autonomous navigation | config/launch files ready, not yet tested on the real robot |
+| 3 — autonomous navigation | done, validated on the real robot |
+| 4 — points of interest | done |

@@ -19,6 +19,10 @@
   <exec_depend>dwa_local_planner</exec_depend>
   <exec_depend>navfn</exec_depend>
   <exec_depend>costmap_2d</exec_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>rospkg</exec_depend>
+  <exec_depend>actionlib</exec_depend>
+  <exec_depend>move_base_msgs</exec_depend>
 
   <export></export>
 </package>

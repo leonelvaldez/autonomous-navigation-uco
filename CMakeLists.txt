@@ -16,3 +16,11 @@ install(DIRECTORY config/
 install(DIRECTORY maps/
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/maps
 )
+
+install(DIRECTORY poi/
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/poi
+)
+
+catkin_install_python(PROGRAMS scripts/send_nav_goal.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
