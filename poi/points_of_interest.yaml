@@ -1,26 +1,40 @@
 # Points of interest, Task 4.
 # Coordinates are in the map frame, read from RViz (Publish Point tool)
-# using the Task 2 map. All in the same room for now, map doesn't cover
-# more of the building yet.
+# using the expanded map (room + corridor + extra rooms, Session 10).
 
 points_of_interest:
   - id: entrance1
     label: "Entrance 1"
-    x: 2.87
-    y: 5.76
+    x: 5.64
+    y: 2.61
     yaw: 0.0
   - id: entrance2
     label: "Entrance 2"
-    x: 6.7
-    y: 2.9
+    x: 7.28
+    y: -1.48
     yaw: 0.0
-  - id: desk
-    label: "Desk"
-    x: 0.85
-    y: 0.503
+  - id: stairs1
+    label: "Stairs 1"
+    x: 9.07
+    y: 18.8
     yaw: 0.0
-  - id: openspace
-    label: "Open space"
-    x: -0.283
-    y: 2.48
+  - id: stairs2
+    label: "Stairs 2"
+    x: 8.61
+    y: -4.09
+    yaw: 0.0
+  - id: my_desk
+    label: "My desk"
+    x: 1.42
+    y: 0.083
+    yaw: 0.0
+  - id: middle_corridor
+    label: "Middle corridor"
+    x: 10.2
+    y: 8.38
+    yaw: 0.0
+  - id: entrance_corridor
+    label: "Corridor entrance"
+    x: 7.04
+    y: 20.8
     yaw: 0.0
