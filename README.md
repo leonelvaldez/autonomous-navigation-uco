@@ -25,7 +25,12 @@ source devel/setup.bash
 ## Task 2 — map
 
 `maps/map.pgm` + `maps/map.yaml`, produced with `slam_gmapping` run
-directly (no launch file for this yet, was done via `rosrun`).
+directly (no launch file for this yet, was done via `rosrun`). Covers the
+room, the corridor and the other rooms of the building. The older
+single-room map is kept as `maps/map_room_only.*` for reference. A
+stairwell that a 2D lidar can't see (it's a drop-off, no wall at scan
+height) was blocked by hand in the map image so the robot won't try to
+drive into it.
 
 Two things had to be right for the map to come out clean:
 - lidar's `frame_id` is `laser_frame`, not `laser`
@@ -60,8 +65,8 @@ Tested on the real robot, reaches goals and avoids obstacles.
 
 ## Task 4 — points of interest
 
-`poi/points_of_interest.yaml` has named (x, y, yaw) spots on the map,
-all in the same room for now since that's all the map currently covers.
+`poi/points_of_interest.yaml` has named (x, y, yaw) spots across the
+building (entrances, the desk, corridor points, the stairs).
 
 Send the robot to one with:
 ```bash
@@ -69,11 +74,50 @@ rosrun autonomous_navigation_uco send_nav_goal.py <poi_id>
 rosrun autonomous_navigation_uco send_nav_goal.py --list   # to see the ids
 ```
 
+## Task 5 — external events (presence detector)
+
+`scripts/presence_detector.py` simulates a presence sensor. It publishes
+JSON events on `/presence_events` saying a person was detected (or
+cleared) in one of the POI zones. It can run on its own picking random
+zones, or you can trigger events by hand:
+```bash
+rosrun autonomous_navigation_uco presence_detector.py
+# manual:
+rostopic pub /presence_events std_msgs/String \
+  "data: '{\"zone_id\": \"my_desk\", \"event\": \"person_detected\"}'" --once
+```
+
+## Task 6 — dynamic costmap update
+
+`scripts/dynamic_costmap_updater.py` listens to `/presence_events` and,
+for each zone with a person in it, drops a patch of fake obstacle points
+on `/presence_zone_obstacles`. That topic is a second observation source
+in move_base's obstacle layer (see `config/costmap_common_params.yaml`),
+so the planner routes around an active zone using the normal costmap
+machinery — no custom plugin needed. When the zone clears it calls
+`/move_base/clear_costmaps` to recompute.
+
+## Extra — doors (not one of the assigned tasks)
+
+The building has 4 doors that got mapped as open space but can actually
+be open or closed. `scripts/door_state_publisher.py` keeps their state on
+a latched `/door_states` topic (so it's known from the start, not only
+once the robot is close), and `scripts/door_costmap_updater.py` marks any
+closed door as an obstacle the same way Task 6 marks presence zones.
+Change a door while everything's running with:
+```bash
+rostopic pub /set_door_state std_msgs/String \
+  "data: '{\"door_id\": \"door1\", \"state\": \"closed\"}'" --once
+```
+
 ## Status
 
 | Task | Status |
 |---|---|
 | 1 — ROS/TurtleBot setup | done |
-| 2 — map building | done, map committed above |
+| 2 — map building | done, full-building map committed above |
 | 3 — autonomous navigation | done, validated on the real robot |
 | 4 — points of interest | done |
+| 5 — external events | done |
+| 6 — dynamic costmap update | done |
+| extra — doors | done (self-initiated, beyond the assigned tasks) |
