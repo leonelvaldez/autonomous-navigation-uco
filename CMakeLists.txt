@@ -21,6 +21,6 @@ install(DIRECTORY poi/
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/poi
 )
 
-catkin_install_python(PROGRAMS scripts/send_nav_goal.py scripts/presence_detector.py
+catkin_install_python(PROGRAMS scripts/send_nav_goal.py scripts/presence_detector.py scripts/dynamic_costmap_updater.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

@@ -3,11 +3,22 @@
 # layer name (obstacle_layer, inflation_layer, static_layer) matching the
 # plugins list in global/local_costmap_params.yaml, otherwise the layer
 # just ignores them.
+#
+# two observation sources feed the obstacle layer now:
+#   - laser_scan_sensor: the real rplidar scan
+#   - presence_zone_sensor: fake points from dynamic_costmap_updater.py
+#     (task 6), published on /presence_zone_obstacles for zones where the
+#     presence detector currently reports someone
+#
+# presence_zone_sensor has clearing: false on purpose -- clearing a zone
+# is handled by dynamic_costmap_updater.py calling clear_costmaps
+# directly instead of raytrace clearing (there's no real sensor origin
+# to raytrace from for a fake zone).
 
 footprint: [[-0.22, -0.22], [-0.22, 0.22], [0.22, 0.22], [0.22, -0.22]]
 
 obstacle_layer:
-  observation_sources: laser_scan_sensor
+  observation_sources: laser_scan_sensor presence_zone_sensor
   obstacle_range: 6.0
   raytrace_range: 6.5
   laser_scan_sensor:
@@ -16,6 +27,14 @@ obstacle_layer:
     topic: /scan
     marking: true
     clearing: true
+  presence_zone_sensor:
+    sensor_frame: map
+    data_type: PointCloud2
+    topic: /presence_zone_obstacles
+    marking: true
+    clearing: false
+    min_obstacle_height: -1.0
+    max_obstacle_height: 1.0
 
 inflation_layer:
   inflation_radius: 0.4
