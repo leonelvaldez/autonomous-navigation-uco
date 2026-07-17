@@ -1,0 +1,36 @@
+<launch>
+  <!--
+    Simulated turtlebot in Stage, so navigation + the task 5/6/door stuff can
+    be tested without the real robot. The sim just looks like the real robot to
+    the rest of the stack (publishes /odom and /scan, listens for drive
+    commands), so the real amcl/move_base launch files and configs are reused
+    here with no changes.
+
+    Run this whole thing on the VM. Then run send_nav_goal.py / presence_detector.py
+    / the door scripts against it exactly like you would with the real robot.
+  -->
+
+  <param name="/use_sim_time" value="true" />
+
+  <arg name="world" default="$(find autonomous_navigation_uco)/simulation/turtlebot.world" />
+
+  <!-- the simulator -->
+  <node pkg="stage_ros" type="stageros" name="stageros" args="$(arg world)" output="screen">
+    <!-- stage names the laser topic base_scan, the stack wants /scan -->
+    <remap from="base_scan" to="/scan" />
+    <!-- drive the sim robot straight from move_base's navi output (the same
+         topic move_base_uco.launch remaps its cmd_vel to). no velocity mux in
+         sim -- that runs on the Pi on the real robot. -->
+    <remap from="cmd_vel" to="/cmd_vel_mux/input/navi" />
+  </node>
+
+  <!-- the real lidar is mounted backwards (rplidar_uco.launch uses yaw pi), but
+       the simulated one isn't, so laser_frame just sits on the robot here,
+       identity. this stands in for the static tf we don't run in sim. -->
+  <node pkg="tf" type="static_transform_publisher" name="base_to_laser_sim"
+        args="0 0 0 0 0 0 base_link laser_frame 100" />
+
+  <!-- reuse the real localization + navigation, unchanged -->
+  <include file="$(find autonomous_navigation_uco)/launch/amcl_uco.launch" />
+  <include file="$(find autonomous_navigation_uco)/launch/move_base_uco.launch" />
+</launch>

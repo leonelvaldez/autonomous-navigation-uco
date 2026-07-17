@@ -110,6 +110,20 @@ rostopic pub /set_door_state std_msgs/String \
   "data: '{\"door_id\": \"door1\", \"state\": \"closed\"}'" --once
 ```
 
+## Simulation (Stage)
+
+There's a 2D Stage simulation of the robot in `simulation/`, so the whole
+navigation stack (and the presence/door features) can be tested without the
+real robot. It uses the real map as the world, so everything runs unchanged.
+
+```bash
+sudo apt install -y ros-noetic-stage-ros
+roslaunch autonomous_navigation_uco stage_nav.launch
+```
+
+See `simulation/README.md` for details. This covers the "test in simulation"
+side of Task 7; it doesn't replace validating on the real robot.
+
 ## Status
 
 | Task | Status |
@@ -121,3 +135,4 @@ rostopic pub /set_door_state std_msgs/String \
 | 5 — external events | done |
 | 6 — dynamic costmap update | done |
 | extra — doors | done (self-initiated, beyond the assigned tasks) |
+| simulation | Stage sim for robot-free testing (`simulation/`) |
