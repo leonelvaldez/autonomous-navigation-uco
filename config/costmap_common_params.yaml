@@ -35,6 +35,11 @@ obstacle_layer:
     clearing: false
     min_obstacle_height: -1.0
     max_obstacle_height: 1.0
+    # big obstacle_range on purpose: these are map-fixed virtual points,
+    # not a real sensor. the layer default (6.0) is measured from the
+    # source origin, which for sensor_frame map is (0,0) -- so any zone
+    # more than 6m from the map origin would silently never get marked.
+    obstacle_range: 100.0
 
 inflation_layer:
   inflation_radius: 0.4
