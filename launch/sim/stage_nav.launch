@@ -20,7 +20,7 @@
     <remap from="base_scan" to="/scan" />
     <!-- drive the sim robot straight from move_base's navi output (the same
          topic move_base_uco.launch remaps its cmd_vel to). no velocity mux in
-         sim -- that runs on the Pi on the real robot. -->
+         sim, that one runs on the Pi on the real robot. -->
     <remap from="cmd_vel" to="/cmd_vel_mux/input/navi" />
   </node>
 
