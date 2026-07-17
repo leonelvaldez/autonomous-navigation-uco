@@ -1,0 +1,29 @@
+# Door definitions -- extra feature on top of tasks 5+6, added by choice,
+# not part of the official task list. Coordinates read from RViz (Publish
+# Point tool) on the expanded map, same way as poi/points_of_interest.yaml.
+#
+# default_state is just the starting state when door_state_publisher.py
+# launches -- it can be changed anytime while running, see the script's
+# docstring for how.
+
+doors:
+  - id: door1
+    label: "Door 1"
+    x: 5.65
+    y: 3.98
+    default_state: open
+  - id: door2
+    label: "Door 2"
+    x: 7.55
+    y: -1.52
+    default_state: open
+  - id: door3
+    label: "Door 3"
+    x: 8.5
+    y: -2.38
+    default_state: open
+  - id: door4
+    label: "Door 4"
+    x: 7.9
+    y: 20.9
+    default_state: open

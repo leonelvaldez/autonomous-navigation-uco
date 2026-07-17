@@ -4,21 +4,25 @@
 # plugins list in global/local_costmap_params.yaml, otherwise the layer
 # just ignores them.
 #
-# two observation sources feed the obstacle layer now:
+# three observation sources feed the obstacle layer now:
 #   - laser_scan_sensor: the real rplidar scan
 #   - presence_zone_sensor: fake points from dynamic_costmap_updater.py
 #     (task 6), published on /presence_zone_obstacles for zones where the
 #     presence detector currently reports someone
+#   - door_sensor: fake points from door_costmap_updater.py (extra
+#     feature, not one of the 8 official tasks -- doors get mapped as
+#     open space but can be closed in reality), published on
+#     /door_obstacles for every door currently marked closed
 #
-# presence_zone_sensor has clearing: false on purpose -- clearing a zone
-# is handled by dynamic_costmap_updater.py calling clear_costmaps
-# directly instead of raytrace clearing (there's no real sensor origin
-# to raytrace from for a fake zone).
+# presence_zone_sensor and door_sensor both have clearing: false on
+# purpose -- clearing is handled by their respective updater scripts
+# calling clear_costmaps directly instead of raytrace clearing (there's
+# no real sensor origin to raytrace from for fake points).
 
 footprint: [[-0.22, -0.22], [-0.22, 0.22], [0.22, 0.22], [0.22, -0.22]]
 
 obstacle_layer:
-  observation_sources: laser_scan_sensor presence_zone_sensor
+  observation_sources: laser_scan_sensor presence_zone_sensor door_sensor
   obstacle_range: 6.0
   raytrace_range: 6.5
   laser_scan_sensor:
@@ -39,6 +43,17 @@ obstacle_layer:
     # not a real sensor. the layer default (6.0) is measured from the
     # source origin, which for sensor_frame map is (0,0) -- so any zone
     # more than 6m from the map origin would silently never get marked.
+    obstacle_range: 100.0
+  door_sensor:
+    sensor_frame: map
+    data_type: PointCloud2
+    topic: /door_obstacles
+    marking: true
+    clearing: false
+    min_obstacle_height: -1.0
+    max_obstacle_height: 1.0
+    # same reason as presence_zone_sensor above -- doors can be anywhere
+    # on the map, so don't let the 6m default drop the far ones
     obstacle_range: 100.0
 
 inflation_layer:
