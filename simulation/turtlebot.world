@@ -1,9 +1,6 @@
-# Stage world for simulating the turtlebot without the real robot.
-# The floorplan IS the real map (maps/map.pgm), so the simulated laser
-# scans the actual mapped building and amcl localizes against the same map
-# the real robot uses. Not one of the 8 tasks by itself -- it's a testing/
-# demo tool (Dr. Olivares suggested it), and it also covers the "test in
-# simulation" half of Task 7.
+# stage world so nav can be tested without the real robot. floorplan is
+# the real map, so amcl localizes against the same thing the robot uses.
+# not one of the 8 tasks, just working on this for testing/demo purposes.
 
 # a 360 degree laser, roughly like the RPLidar A2M8
 define laser ranger
@@ -31,11 +28,16 @@ define turtlebot position
   laser( pose [ 0 0 0 0 ] )
 )
 
-# the building, loaded from the real map image
+# size/pose here are NOT the 80x80 map -- stage scales just the black
+# wall pixels to `size`, so it has to be the building's real size or it
+# stretches unevenly (took forever to figure out why the sim laser was
+# nowhere near the walls). walls measure 13.75 x 32.40m, centered at
+# (5.55, 5.93) in map coords. boundary 0 so it doesn't draw an extra
+# wall around that box.
 define floorplan model
 (
   color "gray30"
-  boundary 1
+  boundary 0
   gui_nose 0
   gui_grid 0
   gui_move 0
@@ -54,15 +56,12 @@ window
   scale 12
 )
 
-# size is 80x80 m to match the map (1600 px * 0.05 m/px). pose [0 0 0 0]
-# centers it on the origin, which matches map.yaml's origin [-40 -40] (the
-# map spans -40..+40 on both axes, so its center is 0,0 too).
 floorplan
 (
   name "uco_building"
   bitmap "../maps/map.pgm"
-  size [ 80.0 80.0 2.0 ]
-  pose [ 0.0 0.0 0.0 0.0 ]
+  size [ 13.75 32.40 2.0 ]
+  pose [ 5.55 5.93 0.0 0.0 ]
 )
 
 # start the robot near the origin (close to the my_desk POI). if it spawns
