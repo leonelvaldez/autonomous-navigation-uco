@@ -64,10 +64,11 @@ floorplan
   pose [ 5.55 5.93 0.0 0.0 ]
 )
 
-# start the robot near the origin (close to the my_desk POI). if it spawns
-# inside a wall, move this pose to a known-free spot.
+# (0,0,0,0) turned out to be right against a wall -- move_base couldn't
+# even rotate in place there. using my_desk's real POI coords instead,
+# checked clear with plenty of margin on the actual map.
 turtlebot
 (
   name "turtlebot"
-  pose [ 0.0 0.0 0.0 0.0 ]
+  pose [ 1.42 0.083 0.0 0.0 ]
 )
