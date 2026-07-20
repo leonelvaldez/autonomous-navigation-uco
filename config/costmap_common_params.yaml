@@ -57,8 +57,12 @@ obstacle_layer:
     obstacle_range: 100.0
 
 inflation_layer:
-  inflation_radius: 0.4
-  cost_scaling_factor: 5.0
+  # lowered from 0.4/5.0 -- at 0.4 the inflated zones from both sides of
+  # a narrow doorway overlapped and blocked it completely, even though
+  # the raw map had a clear gap there. tuned live with rqt_reconfigure
+  # against the real robot
+  inflation_radius: 0.07
+  cost_scaling_factor: 8.0
 
 static_layer:
   map_topic: /map
