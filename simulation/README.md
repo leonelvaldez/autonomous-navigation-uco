@@ -38,9 +38,13 @@ scripts all work the same as on the real robot.
 - The simulated laser has no physical mounting offset, so the sim uses an
   identity `base_link -> laser_frame` transform (yaw 0), not the real robot's
   yaw = pi.
-- If the simulated scan doesn't line up with the map walls in RViz, the Stage
-  bitmap is flipped relative to `map_server` -- make a flipped copy and point
-  the world file at it:
-  `convert ../maps/map.pgm -flip map_stage.pgm`
+- Stage's bitmap floorplan model scales the OBSTACLE (black) pixels to the
+  world file's declared `size`, not the whole image. If the real building
+  isn't square (ours isn't) and `size`/`pose` don't match its real
+  occupied-pixel extent/center, the scan comes out non-uniformly stretched
+  -- looks like a rotation/flip bug but isn't fixable as one. Already fixed
+  here (`size [13.75 32.40]`, `pose [5.55 5.93]`), but if this map ever
+  changes/expands again, recheck `size`/`pose` against the new building
+  extent, not the map canvas.
 - This is a testing/demo tool. It does **not** replace validating on the real
   robot.
