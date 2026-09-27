@@ -1,36 +1,27 @@
 #!/usr/bin/env python3
 """
-door_costmap_updater.py
+door_costmap_updater.py -- extra feature on top of tasks 5+6, not one of
+the official 8 tasks.
 
-Extra feature on top of tasks 5+6 (added by choice, not one of the
-official 8 tasks). Subscribes to /door_states (see
-door_state_publisher.py) and, for every door currently marked "closed",
-continuously publishes a disc of synthetic obstacle points centered on
-that door's map-frame coordinates (from poi/doors.yaml) as a
-sensor_msgs/PointCloud2 on the /door_obstacles topic.
+listens to /door_states (door_state_publisher.py) and for every door
+currently marked closed, keeps publishing a disc of fake obstacle points
+around its coords (poi/doors.yaml) as a PointCloud2 on /door_obstacles.
 
-/door_obstacles is registered as a third observation source in
-move_base's obstacle_layer (alongside laser_scan_sensor and
-presence_zone_sensor -- see config/costmap_common_params.yaml), so a
-closed door is treated as a real obstacle by the costmap and global
-planner, same as tasks 5+6's presence zones and the real LiDAR. This is
-what lets move_base plan a route around a closed door from the very
-first plan, not just react once it gets close enough to see it.
+same trick as task 6: /door_obstacles is just a third observation source
+in move_base's obstacle layer next to the lidar and the presence zones
+(costmap_common_params.yaml), so a closed door gets treated as a real
+obstacle with no custom plugin -- move_base can plan around it from the
+very first plan, not just once it's close enough to see it physically.
 
-Because /door_states is latched, this node picks up whatever the current
-door states already are as soon as it starts, even if door_state_publisher
-was running before it -- so route planning accounts for closed doors from
-the start, not just from the next state-change event.
+/door_states is latched, so this picks up whatever the current states
+already are as soon as it starts, even if door_state_publisher was
+running first.
 
-Doors can change state at any time, including while the robot is
-already mid-route:
-  - closed -> open: this node calls /move_base/clear_costmaps to force a
-    full recompute, same as tasks 5+6's person_cleared handling.
-  - open -> closed: no special handling needed. The new obstacle points
-    simply appear on the next publish cycle, and move_base's own global
-    planner re-evaluates its plan against the costmap on every cycle --
-    if the current plan now runs through a lethal cell, it replans
-    automatically, even if the robot was already moving towards it.
+doors can change mid-route:
+  - closed -> open: calls /move_base/clear_costmaps to force a recompute.
+  - open -> closed: nothing special needed, the new points just show up
+    next publish cycle and move_base replans on its own if the current
+    path now runs into them.
 """
 
 import json

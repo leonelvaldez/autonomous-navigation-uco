@@ -1,36 +1,21 @@
 #!/usr/bin/env python3
 """
-presence_detector.py
+presence_detector.py -- task 5, external event integration.
 
-Task 5 -- External Event Integration.
+fake presence sensor. publishes json events on /presence_events saying a
+person showed up (or left) in one of the poi zones.
 
-Simulates a presence detector: publishes JSON-encoded person-detected /
-person-cleared events for a configurable list of zones on the
-/presence_events topic (std_msgs/String).
+runs on its own by default: picks a random zone every 8-20s, clears it
+again ~6s later. multiple zones can be active at once. can also trigger
+events by hand from any terminal on the network:
+  rostopic pub /presence_events std_msgs/String \
+    "data: '{\\"zone_id\\": \\"my_desk\\", \\"event\\": \\"person_detected\\"}'"
 
-Two ways to generate events:
-  1. Automatic mode (default, always running): at random intervals within
-     [min_interval, max_interval] seconds, a random zone is chosen and a
-     "person_detected" event is published for it. After event_duration
-     seconds, a matching "person_cleared" event is published for that
-     zone. Multiple zones can be simultaneously active.
-  2. Manual mode: from any terminal on the ROS network, publish directly
-     to /presence_events, e.g.:
-       rostopic pub /presence_events std_msgs/String \
-         "data: '{\\"zone_id\\": \\"my_desk\\", \\"event\\": \\"person_detected\\"}'"
+data field is json: {"zone_id": <poi id>, "event": "person_detected" or
+"person_cleared", "timestamp": <epoch seconds>}
 
-Message format published on /presence_events (std_msgs/String, data field
-is a JSON string):
-  {
-    "zone_id": "<string, matches an id in poi/points_of_interest.yaml>",
-    "event": "person_detected" | "person_cleared",
-    "timestamp": <float, seconds since epoch>
-  }
-
-To integrate a real sensor later instead of the simulator, replace the
-body of _auto_event_loop() with a callback from the real sensor's driver
-that calls _publish_event() directly -- the rest of the node (publisher,
-message format, manual-trigger compatibility) does not need to change.
+if a real sensor ever replaces this, just call _publish_event() from its
+callback instead of _auto_event_loop() -- nothing else needs to change.
 """
 
 import json

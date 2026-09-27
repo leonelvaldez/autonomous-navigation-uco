@@ -1,30 +1,24 @@
 #!/usr/bin/env python3
 """
-door_state_publisher.py
+door_state_publisher.py -- extra feature on top of tasks 5+6, not one of
+the official 8 tasks.
 
-Extra feature on top of tasks 5+6 (added by choice, not one of the
-official 8 tasks) -- models the 4 real doors in the mapped space, which
-were mapped as open/empty space but can actually be open or closed.
+the 4 real doors got mapped as open space but can actually be open or
+closed. unlike presence_detector.py's events (a quick pulse: detected,
+then cleared a few seconds later), a door's state sticks until someone
+changes it. so this publishes on a LATCHED topic (/door_states, json
+dict of all door states) -- anything that subscribes, even after
+startup, gets the current state right away instead of waiting for a
+change. that's what lets a closed door affect route planning from the
+start, not just once the robot gets close.
 
-Unlike presence_detector.py's events (a brief pulse: detected, then
-cleared a few seconds later), a door's state is persistent -- it stays
-whatever it was last set to until changed again. So this publishes on a
-LATCHED topic (/door_states, std_msgs/String, JSON dict of all door
-states) -- any node that subscribes, even one that starts up later, gets
-the current state immediately, without waiting for a change event. This
-is what lets a route be planned around a closed door from the start,
-not just discovered mid-drive.
-
-States can still change at any time while the robot is moving -- see
-door_costmap_updater.py, which reacts live to updates on this topic.
-
-To change a door's state, publish to /set_door_state from any terminal
-on the ROS network, e.g.:
+change a door from any terminal on the network:
   rostopic pub /set_door_state std_msgs/String \
     "data: '{\\"door_id\\": \\"door1\\", \\"state\\": \\"closed\\"}'" --once
 
-Message format on /door_states (std_msgs/String, JSON):
-  {"door1": "open", "door2": "closed", "door3": "open", "door4": "open"}
+door_costmap_updater.py reacts live to whatever this publishes.
+
+/door_states data field, json: {"door1": "open", "door2": "closed", ...}
 """
 
 import json

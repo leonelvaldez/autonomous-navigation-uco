@@ -1,31 +1,20 @@
 #!/usr/bin/env python3
 """
-dynamic_costmap_updater.py
+dynamic_costmap_updater.py -- task 6, dynamic costmap update.
 
-Task 6 -- Dynamic Map / Costmap Update.
+listens to /presence_events (presence_detector.py) and keeps track of
+which zones are currently active. for each active zone, keeps publishing
+a disc of fake obstacle points around its poi coords as a PointCloud2 on
+/presence_zone_obstacles.
 
-Subscribes to /presence_events (see presence_detector.py for the message
-format). Maintains the current set of "active" zones (zones where a
-person is currently detected). For every active zone, continuously
-publishes a disc of synthetic obstacle points centered on that zone's
-map-frame coordinates (read from poi/points_of_interest.yaml) as a
-sensor_msgs/PointCloud2 on the /presence_zone_obstacles topic.
+that topic is just registered as a second observation source next to the
+real /scan in move_base's obstacle layer (costmap_common_params.yaml), so
+move_base treats an active zone as a real obstacle and routes around it
+with the normal costmap/DWA machinery -- no custom plugin needed.
 
-/presence_zone_obstacles is registered as a second observation source
-(alongside the real /scan) in move_base's obstacle_layer -- see
-config/costmap_common_params.yaml. This means move_base's costmap and
-DWA local planner automatically treat active zones as obstacles and
-route around them, using the navigation stack's own existing, standard
-machinery. No custom costmap_2d plugin or move_base source modification
-is needed.
-
-When a zone transitions from active to inactive (person_cleared), this
-node calls the /move_base/clear_costmaps service. This forces move_base
-to fully recompute both costmaps from all currently live observation
-sources. Any zones that are still active are re-marked automatically on
-the very next obstacle_layer update cycle from their continuously
-published points, so clearing one zone does not meaningfully affect
-other simultaneously active zones.
+when a zone clears, calls /move_base/clear_costmaps to force a recompute.
+any other zones still active just get re-marked on the next publish
+cycle anyway, so clearing one doesn't affect the others.
 """
 
 import json
